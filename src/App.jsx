@@ -407,7 +407,7 @@ const CalendarApp = () => {
           ))}
           
           {/* Person 2 */}
-          <div className="border-b bg-cyan-100">
+          <div className="border-b" style={{backgroundColor: '#e0f7fa'}}>
             <div className="p-2 text-xs font-medium">
               {names.person2}
             </div>
