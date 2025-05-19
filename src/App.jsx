@@ -1,33 +1,33 @@
 import { useState, useEffect } from 'react';
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps } from 'firebase/app';
 import { getDatabase, ref, onValue, set } from 'firebase/database';
 
-const CalendarApp = () => {
-  // Firebase configuration
-  const firebaseConfig = {  
-    apiKey: "AIzaSyDSBW64TdRAK74ZoPcasqr1DkXv_hWV91E",  
-    authDomain: "shared-calendar-f4108.firebaseapp.com",  
-    databaseURL: "https://shared-calendar-f4108-default-rtdb.firebaseio.com",  
-    projectId: "shared-calendar-f4108",  
-    storageBucket: "shared-calendar-f4108.firebasestorage.app",  
-    messagingSenderId: "775398150885",  
-    appId: "1:775398150885:web:fbf40577ac32e54374fa0c"
-  };
+// Firebase configuration
+const firebaseConfig = {  
+  apiKey: "AIzaSyDSBW64TdRAK74ZoPcasqr1DkXv_hWV91E",  
+  authDomain: "shared-calendar-f4108.firebaseapp.com",  
+  databaseURL: "https://shared-calendar-f4108-default-rtdb.firebaseio.com",  
+  projectId: "shared-calendar-f4108",  
+  storageBucket: "shared-calendar-f4108.firebasestorage.app",  
+  messagingSenderId: "775398150885",  
+  appId: "1:775398150885:web:fbf40577ac32e54374fa0c"
+};
 
-  // Initialize Firebase (wrapped in useEffect to avoid multiple initializations)
-  useEffect(() => {
-    try {
-      initializeApp(firebaseConfig);
-    } catch (error) {
-      // App already initialized
-      console.log("Firebase already initialized");
-    }
-  }, []);
-  
-  const database = getDatabase();
-  
+// Initialize Firebase outside of component to ensure it only runs once
+let firebaseApp;
+try {
+  firebaseApp = initializeApp(firebaseConfig);
+} catch (error) {
+  // If already initialized, use the existing app
+  firebaseApp = getApps().length > 0 ? getApps()[0] : initializeApp(firebaseConfig);
+}
+
+const CalendarApp = () => {
   // Current date to start calendar
   const today = new Date();
+  
+  // Get database reference from the initialized app
+  const database = getDatabase(firebaseApp);
   
   // User identification
   const [username, setUsername] = useState(() => {
